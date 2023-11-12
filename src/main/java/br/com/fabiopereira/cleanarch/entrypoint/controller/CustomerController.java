@@ -1,5 +1,6 @@
 package br.com.fabiopereira.cleanarch.entrypoint.controller;
 
+import br.com.fabiopereira.cleanarch.core.usecase.DeleteCustomerByIdUseCase;
 import br.com.fabiopereira.cleanarch.core.usecase.FindCustomerByIdUseCase;
 import br.com.fabiopereira.cleanarch.core.usecase.InsertCustomerUsecase;
 import br.com.fabiopereira.cleanarch.core.usecase.UpdateCustomerUseCase;
@@ -22,6 +23,8 @@ public class CustomerController {
     private FindCustomerByIdUseCase findCustomerByIdUseCase;
     @Autowired
     private UpdateCustomerUseCase updateCustomerUseCase;
+    @Autowired
+    private DeleteCustomerByIdUseCase deleteCustomerByIdUseCase;
 
     @PostMapping
     public ResponseEntity<Void> insert(@Valid @RequestBody CustomerRequest customerRequest) {
@@ -42,6 +45,12 @@ public class CustomerController {
         var customer = customerMapper.toCustomer(customerRequest);
         customer.setId(id);
         updateCustomerUseCase.update(customer, customerRequest.zipCode());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        deleteCustomerByIdUseCase.delete(id);
         return ResponseEntity.noContent().build();
     }
 
